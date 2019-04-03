@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <import type="android.text.TextUtils"/>
+        <variable
+            name="viewModel"
+            type="com.wubo.wanandroid.ui.my.vm.RegisterVm"/>
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/top_ll"
+            layout="@layout/title_commom_layout" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="50dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp">
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:hintTextAppearance="@style/TextInput">
+
+                <EditText
+                    android:id="@+id/register_user_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="42dp"
+                    android:theme="@style/MyEditText"
+                    android:layout_marginLeft="5dp"
+                    android:ellipsize="end"
+                    android:text="@={viewModel.userNameR}"
+                    android:hint="用户名"
+                    android:imeActionId="6"
+                    android:imeOptions="actionUnspecified"
+                    android:inputType="textPersonName"
+                    android:maxLength="13"
+                    android:numeric="integer"
+                    android:selectAllOnFocus="false"
+                    android:singleLine="false"
+                    android:textColorHint="#999999"
+                    android:textColor="#333333"
+                    android:textSize="14sp" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:hintTextAppearance="@style/TextInput">
+
+                <EditText
+                    android:id="@+id/register_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="42dp"
+                    android:theme="@style/MyEditText"
+                    android:layout_marginLeft="5dp"
+                    android:ellipsize="end"
+                    android:text="@={viewModel.passwordR}"
+                    android:hint="密码"
+                    android:imeActionId="6"
+                    android:imeOptions="actionUnspecified"
+                    android:inputType="textPassword"
+                    android:maxLength="16"
+                    android:selectAllOnFocus="false"
+                    android:singleLine="false"
+                    android:textColorHint="#999999"
+                    android:textColor="#333333"
+                    android:textSize="14sp" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:hintTextAppearance="@style/TextInput">
+
+                <EditText
+                    android:id="@+id/register_repassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="42dp"
+                    android:theme="@style/MyEditText"
+                    android:layout_marginLeft="5dp"
+                    android:ellipsize="end"
+                    android:text="@={viewModel.repasswordR}"
+                    android:hint="确认密码"
+                    android:imeActionId="6"
+                    android:imeOptions="actionUnspecified"
+                    android:inputType="textPassword"
+                    android:maxLength="16"
+                    android:selectAllOnFocus="false"
+                    android:singleLine="false"
+                    android:textColorHint="#999999"
+                    android:textColor="#333333"
+                    android:textSize="14sp" />
+            </android.support.design.widget.TextInputLayout>
+        </LinearLayout>
+
+        <Button
+            app:onClickCommand="@{viewModel.gotoRegist}"
+            android:enabled="@{!TextUtils.isEmpty(viewModel.userNameR)&amp;&amp;!TextUtils.isEmpty(viewModel.passwordR)&amp;&amp;!TextUtils.isEmpty(viewModel.repasswordR)}"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginTop="20dp"
+            android:background="@{!TextUtils.isEmpty(viewModel.userNameR)&amp;&amp;!TextUtils.isEmpty(viewModel.passwordR)&amp;&amp;!TextUtils.isEmpty(viewModel.repasswordR) ? @color/main_color:@color/gray_btn}"
+            android:text="注册"
+            android:textSize="14sp"
+            android:textColor="@color/white"/>
+
+    </LinearLayout>
+</layout>

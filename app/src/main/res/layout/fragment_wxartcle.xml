@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.wubo.wanandroid.ui.wxarticle.vm.WXarticleVm"/>
+    </data>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/top_ll"
+            layout="@layout/title_commom_layout" />
+
+        <com.gxz.PagerSlidingTabStrip
+            android:id="@+id/pager_tab"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@color/white"
+            android:textColor="#999999"
+            android:textSize="14sp"
+            app:pstsDividerColor="@android:color/transparent"
+            app:pstsIndicatorColor="#00BCA0"
+            app:pstsIndicatorHeight="2dp"
+            app:pstsScaleZoomMax="0.1"
+            app:pstsShouldExpand="false"
+            app:pstsTabPaddingLeftRight="15dp"
+            app:pstsTextSelectedColor="#00BCA0"
+            app:pstsUnderlineColor="@android:color/transparent" />
+
+        <View style="@style/top_line"></View>
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/wxarticle_viewpager"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+    </LinearLayout>
+</layout>

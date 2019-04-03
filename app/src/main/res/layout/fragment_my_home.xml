@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <data>
+        <import type="android.view.View"/>
+        <import type="me.tatarka.bindingcollectionadapter2.LayoutManagers"/>
+        <variable
+            name="viewModel"
+            type="com.wubo.wanandroid.ui.home.vm.MyHomeVm"/>
+
+    </data>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="#ffffff">
+        <com.scwang.smartrefresh.layout.SmartRefreshLayout
+            android:id="@+id/home_refresh"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:smartRefresh="@{viewModel.refreshLoadMoreListener}"
+            app:srlEnableLoadMoreWhenContentNotFull="false">
+
+            <android.support.v4.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="none">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+                    <com.youth.banner.Banner
+                        android:id="@+id/home_banner"
+                        android:layout_width="match_parent"
+                        android:layout_height="150dp"/>
+
+                    <android.support.v7.widget.RecyclerView
+                        android:visibility="@{viewModel.dataStatus ==0 ? View.GONE :View.VISIBLE}"
+                        app:layoutManager="@{LayoutManagers.linear()}"
+                        app:items="@{viewModel.items}"
+                        app:itemBinding="@{viewModel.itemBinding}"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"/>
+                </LinearLayout>
+            </android.support.v4.widget.NestedScrollView>
+
+        </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+
+
+    </LinearLayout>
+</layout>

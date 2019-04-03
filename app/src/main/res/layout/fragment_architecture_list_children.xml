@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+        <import type="android.view.View" />
+        <import type="me.tatarka.bindingcollectionadapter2.LayoutManagers"/>
+        <variable
+            name="viewModel"
+            type="com.wubo.wanandroid.ui.architecture.vm.ArchitectureListChildrenVm" />
+    </data>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <com.scwang.smartrefresh.layout.SmartRefreshLayout
+            android:id="@+id/architecture_list_children_refresh"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:smartRefresh="@{viewModel.refresh}"
+            app:srlEnableLoadMoreWhenContentNotFull="false">
+
+            <android.support.v4.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scrollbars="none">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <android.support.v7.widget.RecyclerView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="@{viewModel.status==0?View.GONE:View.VISIBLE}"
+                        app:items="@{viewModel.items}"
+                        app:itemBinding="@{viewModel.itemBinding}"
+                        app:layoutManager="@{LayoutManagers.linear()}"/>
+                </LinearLayout>
+            </android.support.v4.widget.NestedScrollView>
+        </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+    </LinearLayout>
+
+</layout>
