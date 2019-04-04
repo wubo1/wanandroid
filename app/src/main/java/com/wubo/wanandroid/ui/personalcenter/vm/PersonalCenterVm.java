@@ -9,6 +9,7 @@ import android.databinding.ObservableList;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.view.View;
 
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener;
@@ -21,10 +22,12 @@ import com.wubo.wanandroid.config.NetConstant;
 import com.wubo.wanandroid.http.BaseNetObserver;
 import com.wubo.wanandroid.http.NetRequest;
 import com.wubo.wanandroid.http.cookies.CookiesManager;
+import com.wubo.wanandroid.ui.dialog.ExitDialog;
 import com.wubo.wanandroid.ui.my.act.LoginActivity;
 import com.wubo.wanandroid.ui.webview.MyWebViewActivity;
 import com.wubo.wanandroid.utils.CommonUtils;
 import com.wubo.wanandroid.utils.OnItemClickListener;
+import com.wubo.wanandroid.utils.Utils;
 
 import me.goldze.mvvmhabit.base.BaseViewModel;
 import me.goldze.mvvmhabit.binding.command.BindingAction;
@@ -44,9 +47,9 @@ import static android.content.ContentValues.TAG;
 public class PersonalCenterVm extends BaseViewModel {
     public int page =0;
     public ObservableInt status=new ObservableInt(0);
-    public ObservableField<String>login=new ObservableField<>("登录");
     public ObservableField<String> username=new ObservableField<>();
     public ObservableBoolean isOver= new ObservableBoolean(false);
+    public UIChangeObservable uc = new UIChangeObservable();
     public ObservableList<CollectListBean.DataBean.DatasBean> items = new ObservableArrayList();
 
     public ItemBinding itemBinding = ItemBinding.of(BR.item, R.layout.collect_list_item)
@@ -117,26 +120,20 @@ public class PersonalCenterVm extends BaseViewModel {
 
     public void refreshLoginData() {
         if (CommonUtils.isLogin()){
-            login.set("退出登录");
             username.set(SPUtils.getInstance().getString(NetConstant.USERNAME));
         }else{
-            username.set("username");
-            login.set("登录");
+            username.set("登录");
         }
+    }
+
+    public class UIChangeObservable{
+        public ObservableBoolean loginOrLogout =new ObservableBoolean(false);
     }
 
     public BindingCommand gotoLoginOrLogOut =new BindingCommand(new BindingAction() {
         @Override
         public void call() {
-            if (login.get().equals("退出登录")){
-                SPUtils.getInstance().put(NetConstant.ISLOGIN,false);
-                items.clear();
-                CommonUtils.removeCookies();
-                Messenger.getDefault().sendNoMsg(ConstantConfig.TOKEN_LOGOUT_LOGIN);
-            }else{
-                startActivity(LoginActivity.class);
-            }
-            refreshLoginData();
+            uc.loginOrLogout.set(!uc.loginOrLogout.get());
         }
     });
 

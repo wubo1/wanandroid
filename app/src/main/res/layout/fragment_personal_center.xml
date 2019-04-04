@@ -2,12 +2,88 @@
 <layout>
 
     <data>
+
         <import type="android.view.View" />
-        <import type="me.tatarka.bindingcollectionadapter2.LayoutManagers"/>
+
+        <import type="me.tatarka.bindingcollectionadapter2.LayoutManagers" />
+
         <variable
             name="viewModel"
-            type="com.wubo.wanandroid.ui.personalcenter.vm.PersonalCenterVm"/>
+            type="com.wubo.wanandroid.ui.personalcenter.vm.PersonalCenterVm" />
     </data>
+
+    <!--<com.scwang.smartrefresh.layout.SmartRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/personal_center_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:smartRefresh="@{viewModel.refresh}"
+        app:srlEnableLoadMoreWhenContentNotFull="false">
+
+        <android.support.design.widget.CoordinatorLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <android.support.design.widget.AppBarLayout
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:fitsSystemWindows="true"
+                android:theme="@style/AppTheme.AppBarOverlay">
+
+                <android.support.design.widget.CollapsingToolbarLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:fitsSystemWindows="true"
+                    android:background="@color/main_color"
+                    app:collapsedTitleGravity="left"
+                    app:expandedTitleGravity="center|bottom"
+                    app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+                    <com.wubo.wanandroid.view.CircleImageView
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="40dp"
+                        android:layout_marginBottom="20dp"
+                        android:scaleType="centerCrop"
+                        android:src="@mipmap/user_icon"
+                        app:onClickCommand="@{viewModel.gotoLoginOrLogOut}"/>
+
+                    <android.support.v7.widget.Toolbar
+                        android:id="@+id/toolbar"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_gravity="center"
+                        app:title="@{viewModel.username}"/>
+
+                </android.support.design.widget.CollapsingToolbarLayout>
+            </android.support.design.widget.AppBarLayout>
+
+            <android.support.v4.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scrollbars="none"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <android.support.v7.widget.RecyclerView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="@{viewModel.status==0?View.GONE:View.VISIBLE}"
+                        app:itemBinding="@{viewModel.itemBinding}"
+                        app:items="@{viewModel.items}"
+                        app:layoutManager="@{LayoutManagers.linear()}" />
+                </LinearLayout>
+
+            </android.support.v4.widget.NestedScrollView>
+        </android.support.design.widget.CoordinatorLayout>
+    </com.scwang.smartrefresh.layout.SmartRefreshLayout>-->
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -37,7 +113,7 @@
                     <android.support.v7.widget.CardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:cardBackgroundColor="@color/my_bg"
+                        app:cardBackgroundColor="@color/main_color"
                         android:elevation="20dp"
                         android:layout_marginBottom="20dp">
                         <LinearLayout
@@ -45,23 +121,15 @@
                             android:layout_height="wrap_content"
                             android:orientation="vertical">
 
-                            <TextView
-                                app:onClickCommand="@{viewModel.gotoLoginOrLogOut}"
-                                android:layout_width="100dp"
-                                android:layout_height="40dp"
-                                android:text="@{viewModel.login}"
-                                tools:text="登录"
-                                android:gravity="center"
-                                android:layout_gravity="end"
-                                android:textSize="14sp"
-                                android:textColor="#303030"/>
                             <com.wubo.wanandroid.view.CircleImageView
                                 android:layout_width="120dp"
                                 android:layout_height="120dp"
                                 android:layout_gravity="center_horizontal"
+                                android:layout_marginTop="40dp"
                                 android:layout_marginBottom="20dp"
                                 android:scaleType="centerCrop"
-                                android:src="@mipmap/user_icon" />
+                                android:src="@mipmap/user_icon"
+                                app:onClickCommand="@{viewModel.gotoLoginOrLogOut}"/>
 
                             <TextView
                                 android:layout_width="wrap_content"

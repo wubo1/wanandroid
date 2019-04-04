@@ -707,7 +707,8 @@ public class CommonUtils {
     public static boolean isLogin(){
         if (SPUtils.getInstance().getBoolean(NetConstant.ISLOGIN)){
             return true;
+        }else{
+            return false;
         }
-        return false;
     }
 }
