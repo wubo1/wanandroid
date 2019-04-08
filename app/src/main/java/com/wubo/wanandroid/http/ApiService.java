@@ -6,6 +6,7 @@ import com.wubo.wanandroid.bean.ArticleBean;
 import com.wubo.wanandroid.bean.BannerBean;
 import com.wubo.wanandroid.bean.BaseBean;
 import com.wubo.wanandroid.bean.CollectListBean;
+import com.wubo.wanandroid.bean.HotKeyBean;
 import com.wubo.wanandroid.bean.ProjectListBean;
 import com.wubo.wanandroid.bean.ProjectTabBean;
 import com.wubo.wanandroid.bean.RegisterBean;
@@ -76,6 +77,22 @@ public interface ApiService {
      */
     @POST("lg/uncollect/{id}/json")
     Observable<BaseBean>unCollect(@Path("id")int id,@Query("originId")int originId );
+
+    /**
+     * 搜索热词
+     * @return
+     */
+    @GET("hotkey/json")
+    Observable<HotKeyBean> hotkey();
+
+    /**
+     * 搜索
+     * @param key 关键字
+     * @return
+     */
+    @POST("article/query/{page}/json")
+    Observable<BaseBean> search(@Path("page")String page,@Query("k")String key);
+
 
 
 }
