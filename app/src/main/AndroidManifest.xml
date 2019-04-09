@@ -29,6 +29,12 @@
         <activity android:name=".ui.webview.MyWebViewActivity"/>
         <activity android:name=".ui.my.act.LoginActivity"/>
         <activity android:name=".ui.my.act.RegisterActivity"/>
+        <activity android:name=".ui.home.act.SearchActivity"
+            android:configChanges="keyboardHidden|navigation|orientation"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan"/>
+        <activity android:name=".ui.home.act.SearchResultActivity" />
     </application>
 
 </manifest>

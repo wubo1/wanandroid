@@ -1,5 +1,10 @@
 package com.wubo.wanandroid.bean;
 
+import android.databinding.BaseObservable;
+import android.databinding.Bindable;
+
+import com.wubo.wanandroid.BR;
+
 import java.util.List;
 
 /**
@@ -8,7 +13,6 @@ import java.util.List;
  * Description:
  */
 public class HotKeyBean extends BaseBean {
-
 
     private List<DataBean> data;
 
@@ -20,7 +24,7 @@ public class HotKeyBean extends BaseBean {
         this.data = data;
     }
 
-    public static class DataBean {
+    public static class DataBean extends BaseObservable{
         /**
          * id : 6
          * link :
@@ -31,7 +35,7 @@ public class HotKeyBean extends BaseBean {
 
         private int id;
         private String link;
-        private String name;
+        private @Bindable String name;
         private int order;
         private int visible;
 
@@ -57,6 +61,7 @@ public class HotKeyBean extends BaseBean {
 
         public void setName(String name) {
             this.name = name;
+            notifyPropertyChanged(BR.name);
         }
 
         public int getOrder() {

@@ -10,10 +10,13 @@ import com.wubo.wanandroid.bean.HotKeyBean;
 import com.wubo.wanandroid.bean.ProjectListBean;
 import com.wubo.wanandroid.bean.ProjectTabBean;
 import com.wubo.wanandroid.bean.RegisterBean;
+import com.wubo.wanandroid.bean.SearchResultBean;
 import com.wubo.wanandroid.bean.WXarticleBean;
 import com.wubo.wanandroid.bean.WXarticleListBean;
 
 import io.reactivex.Observable;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
@@ -91,7 +94,8 @@ public interface ApiService {
      * @return
      */
     @POST("article/query/{page}/json")
-    Observable<BaseBean> search(@Path("page")String page,@Query("k")String key);
+    @FormUrlEncoded
+    Observable<SearchResultBean> search(@Path("page")String page, @Field("k")String key);
 
 
 

@@ -12,6 +12,7 @@ import com.wubo.wanandroid.bean.HotKeyBean;
 import com.wubo.wanandroid.bean.ProjectListBean;
 import com.wubo.wanandroid.bean.ProjectTabBean;
 import com.wubo.wanandroid.bean.RegisterBean;
+import com.wubo.wanandroid.bean.SearchResultBean;
 import com.wubo.wanandroid.bean.WXarticleBean;
 import com.wubo.wanandroid.bean.WXarticleListBean;
 
@@ -104,7 +105,8 @@ public class NetRequest {
         CommonBase(apiService.hotkey(),lifecycleProvider).subscribe(observer);
     }
 
-    public static void search(String page,String key,LifecycleProvider lifecycleProvider,BaseNetObserver<BaseBean> observer){
+    public static void search(String page,String key,LifecycleProvider lifecycleProvider,
+                              BaseNetObserver<SearchResultBean> observer){
         CommonBase(apiService.search(page,key),lifecycleProvider).subscribe(observer);
     }
 

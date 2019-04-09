@@ -13,10 +13,10 @@ import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener;
 import com.wubo.wanandroid.BR;
 import com.wubo.wanandroid.R;
-import com.wubo.wanandroid.bean.ArticleBean;
-import com.wubo.wanandroid.bean.BannerBean;
 import com.wubo.wanandroid.bean.BaseBean;
-import com.wubo.wanandroid.config.ConstantConfig;
+import com.wubo.wanandroid.bean.CollectListBean;
+import com.wubo.wanandroid.bean.ProjectListBean;
+import com.wubo.wanandroid.bean.SearchResultBean;
 import com.wubo.wanandroid.http.BaseNetObserver;
 import com.wubo.wanandroid.http.NetRequest;
 import com.wubo.wanandroid.ui.home.act.SearchActivity;
@@ -27,43 +27,38 @@ import com.wubo.wanandroid.utils.OnItemClickListener;
 import me.goldze.mvvmhabit.base.BaseViewModel;
 import me.goldze.mvvmhabit.binding.command.BindingAction;
 import me.goldze.mvvmhabit.binding.command.BindingCommand;
-import me.goldze.mvvmhabit.bus.Messenger;
 import me.goldze.mvvmhabit.utils.ToastUtils;
 import me.tatarka.bindingcollectionadapter2.ItemBinding;
 
 /**
  * Author: wubo
- * Create on: 2019/3/25 14:10
+ * Create on: 2019/4/9 11:00
  * Description:
  */
-public class MyHomeVm extends BaseViewModel {
+public class SearchResultVm extends BaseViewModel {
 
-    public MyHomeVm(@NonNull Application application) {
-        super(application);
-    }
+    public int page =0;
+    public ObservableField<String> key=new ObservableField<>();
+    public ObservableInt status=new ObservableInt(0);
+    public ObservableField<String> username=new ObservableField<>();
+    public ObservableBoolean isOver= new ObservableBoolean(false);
+    public ObservableList<SearchResultBean.DataBean.DatasBean> items = new ObservableArrayList();
 
-    public int page;
-
-    public ObservableList<String> imagePaths = new ObservableArrayList<>();
-    public ObservableList<String> titles = new ObservableArrayList<>();
-    public ObservableInt dataStatus = new ObservableInt(0);
-    public ObservableBoolean isOver = new ObservableBoolean(false);
-    public ObservableList<ArticleBean.DataBean.DatasBean> items = new ObservableArrayList();
-    public ItemBinding itemBinding = ItemBinding.of(BR.item, R.layout.home_article_items)
-            .bindExtra(BR.listener, new OnItemClickListener<ArticleBean.DataBean.DatasBean>() {
+    public ItemBinding itemBinding = ItemBinding.of(BR.item, R.layout.search_result_item)
+            .bindExtra(BR.listener, new OnItemClickListener<SearchResultBean.DataBean.DatasBean>() {
                 @Override
-                public void onItemClick(int viewId, ArticleBean.DataBean.DatasBean data) {
-                    switch (viewId) {
+                public void onItemClick(int viewId, SearchResultBean.DataBean.DatasBean datasBean) {
+                    switch (viewId){
                         case R.id.article_item:
-                            if (!"".equals(data.getLink())) {
+                            if (!"".equals(datasBean.getLink())){
                                 Bundle bundle = new Bundle();
-                                bundle.putString("url", data.getLink());
-                                startActivity(MyWebViewActivity.class, bundle);
+                                bundle.putString("url" ,datasBean.getLink());
+                                startActivity(MyWebViewActivity.class , bundle);
                             }
                             break;
                         case R.id.article_item_favorite:
                             if (CommonUtils.isLogin()){
-                                collect(data.getId(), data.isCollect());
+                                collect(datasBean.getId(), datasBean.isCollect());
                             }else{
                                 ToastUtils.showShort("你还未登录,请先登录");
                             }
@@ -72,54 +67,58 @@ public class MyHomeVm extends BaseViewModel {
 
                 }
             });
-    public OnRefreshLoadMoreListener refreshLoadMoreListener = new OnRefreshLoadMoreListener() {
+    public OnRefreshLoadMoreListener refresh=new OnRefreshLoadMoreListener() {
         @Override
         public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
-            if (isOver.get()) {
+            if (isOver.get()){
                 refreshLayout.setNoMoreData(true);
-            } else {
+            }else{
                 page++;
-                requestHomeActicle(page, refreshLayout);
+                requestSearchList(page,key.get(),refreshLayout);
             }
 
         }
 
         @Override
         public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-            page = 0;
-            requestBannerData(refreshLayout);
-            requestHomeActicle(page, refreshLayout);
+            requestSearchList(page,key.get(),refreshLayout);
         }
     };
 
-    public BindingCommand gotoSearch= new BindingCommand(new BindingAction() {
+    public BindingCommand back=new BindingCommand(new BindingAction() {
         @Override
         public void call() {
-            startActivity(SearchActivity.class);
+            finish();
         }
     });
 
-    public UIChangeObservable uiChangeObservable = new UIChangeObservable();
+    public BindingCommand toSearchResult= new BindingCommand(new BindingAction() {
+        @Override
+        public void call() {
+            Bundle bundle=new Bundle();
+            bundle.putString("search",key.get());
+            startActivity(SearchActivity.class,bundle);
+        }
+    });
 
-    public class UIChangeObservable {
-        public ObservableField<BannerBean> bannerData = new ObservableField<>();
-    }
-
-    public void requestBannerData(final RefreshLayout refreshLayout) {
-        NetRequest.banner(getLifecycleProvider(), new BaseNetObserver<BannerBean>() {
+    private void requestSearchList(final int page, String key, final RefreshLayout refreshLayout) {
+        NetRequest.search(String.valueOf(page), key, getLifecycleProvider(),
+                new BaseNetObserver<SearchResultBean>() {
             @Override
-            public void onSuccess(BannerBean data) {
-
-
-                imagePaths.clear();
-                titles.clear();
-
-                for (int i = 0; i < data.getData().size(); i++) {
-                    imagePaths.add(data.getData().get(i).getImagePath());
-                    titles.add(data.getData().get(i).getTitle());
+            public void onSuccess(SearchResultBean data) {
+                if (page == 0) {
+                    items.clear();
+                }
+                if (data.getData()!=null){
+                    isOver.set(data.getData().isOver());
+                    items.addAll(data.getData().getDatas());
+                }
+                if (items.size()==0){
+                    status.set(0);
+                }else{
+                    status.set(1);
                 }
 
-                uiChangeObservable.bannerData.set(data);
                 if (refreshLayout != null) {
                     refreshLayout.finishRefresh();
                     refreshLayout.finishLoadMore();
@@ -134,39 +133,7 @@ public class MyHomeVm extends BaseViewModel {
                 }
             }
         });
-    }
 
-    public void requestHomeActicle(final int pages, final RefreshLayout refreshLayout) {
-        NetRequest.homeArticle(String.valueOf(pages), getLifecycleProvider(), new
-                BaseNetObserver<ArticleBean>() {
-                    @Override
-                    public void onSuccess(ArticleBean data) {
-                        if (page == 0) {
-                            items.clear();
-                        }
-                        if (data != null && data.getData().getDatas() != null) {
-                            items.addAll(data.getData().getDatas());
-                        }
-                        if (items.size() == 0) {
-                            dataStatus.set(0);
-                        } else {
-                            dataStatus.set(1);
-                        }
-
-                        if (refreshLayout != null) {
-                            refreshLayout.finishRefresh();
-                            refreshLayout.finishLoadMore();
-                        }
-                    }
-
-                    @Override
-                    public void onFail(Throwable t) {
-                        if (refreshLayout != null) {
-                            refreshLayout.finishRefresh();
-                            refreshLayout.finishLoadMore();
-                        }
-                    }
-                });
     }
 
     private void collect(final int id, boolean isCollect) {
@@ -210,5 +177,10 @@ public class MyHomeVm extends BaseViewModel {
         }
 
     }
+
+    public SearchResultVm(@NonNull Application application) {
+        super(application);
+    }
+
 
 }
