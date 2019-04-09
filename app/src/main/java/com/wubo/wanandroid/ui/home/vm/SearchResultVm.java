@@ -14,8 +14,6 @@ import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener;
 import com.wubo.wanandroid.BR;
 import com.wubo.wanandroid.R;
 import com.wubo.wanandroid.bean.BaseBean;
-import com.wubo.wanandroid.bean.CollectListBean;
-import com.wubo.wanandroid.bean.ProjectListBean;
 import com.wubo.wanandroid.bean.SearchResultBean;
 import com.wubo.wanandroid.http.BaseNetObserver;
 import com.wubo.wanandroid.http.NetRequest;
@@ -37,29 +35,29 @@ import me.tatarka.bindingcollectionadapter2.ItemBinding;
  */
 public class SearchResultVm extends BaseViewModel {
 
-    public int page =0;
-    public ObservableField<String> key=new ObservableField<>();
-    public ObservableInt status=new ObservableInt(0);
-    public ObservableField<String> username=new ObservableField<>();
-    public ObservableBoolean isOver= new ObservableBoolean(false);
+    public int page = 0;
+    public ObservableField<String> key = new ObservableField<>();
+    public ObservableInt status = new ObservableInt(0);
+    public ObservableField<String> username = new ObservableField<>();
+    public ObservableBoolean isOver = new ObservableBoolean(false);
     public ObservableList<SearchResultBean.DataBean.DatasBean> items = new ObservableArrayList();
 
     public ItemBinding itemBinding = ItemBinding.of(BR.item, R.layout.search_result_item)
             .bindExtra(BR.listener, new OnItemClickListener<SearchResultBean.DataBean.DatasBean>() {
                 @Override
                 public void onItemClick(int viewId, SearchResultBean.DataBean.DatasBean datasBean) {
-                    switch (viewId){
+                    switch (viewId) {
                         case R.id.article_item:
-                            if (!"".equals(datasBean.getLink())){
+                            if (!"".equals(datasBean.getLink())) {
                                 Bundle bundle = new Bundle();
-                                bundle.putString("url" ,datasBean.getLink());
-                                startActivity(MyWebViewActivity.class , bundle);
+                                bundle.putString("url", datasBean.getLink());
+                                startActivity(MyWebViewActivity.class, bundle);
                             }
                             break;
                         case R.id.article_item_favorite:
-                            if (CommonUtils.isLogin()){
+                            if (CommonUtils.isLogin()) {
                                 collect(datasBean.getId(), datasBean.isCollect());
-                            }else{
+                            } else {
                                 ToastUtils.showShort("你还未登录,请先登录");
                             }
                             break;
@@ -67,72 +65,72 @@ public class SearchResultVm extends BaseViewModel {
 
                 }
             });
-    public OnRefreshLoadMoreListener refresh=new OnRefreshLoadMoreListener() {
+    public OnRefreshLoadMoreListener refresh = new OnRefreshLoadMoreListener() {
         @Override
         public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
-            if (isOver.get()){
+            if (isOver.get()) {
                 refreshLayout.setNoMoreData(true);
-            }else{
+            } else {
                 page++;
-                requestSearchList(page,key.get(),refreshLayout);
+                requestSearchList(page, key.get(), refreshLayout);
             }
 
         }
 
         @Override
         public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-            requestSearchList(page,key.get(),refreshLayout);
+            requestSearchList(page, key.get(), refreshLayout);
         }
     };
 
-    public BindingCommand back=new BindingCommand(new BindingAction() {
+    public BindingCommand back = new BindingCommand(new BindingAction() {
         @Override
         public void call() {
             finish();
         }
     });
 
-    public BindingCommand toSearchResult= new BindingCommand(new BindingAction() {
+    public BindingCommand toSearch = new BindingCommand(new BindingAction() {
         @Override
         public void call() {
-            Bundle bundle=new Bundle();
-            bundle.putString("search",key.get());
-            startActivity(SearchActivity.class,bundle);
+            Bundle bundle = new Bundle();
+            bundle.putString("search", key.get());
+            startActivity(SearchActivity.class, bundle);
         }
     });
 
     private void requestSearchList(final int page, String key, final RefreshLayout refreshLayout) {
         NetRequest.search(String.valueOf(page), key, getLifecycleProvider(),
                 new BaseNetObserver<SearchResultBean>() {
-            @Override
-            public void onSuccess(SearchResultBean data) {
-                if (page == 0) {
-                    items.clear();
-                }
-                if (data.getData()!=null){
-                    isOver.set(data.getData().isOver());
-                    items.addAll(data.getData().getDatas());
-                }
-                if (items.size()==0){
-                    status.set(0);
-                }else{
-                    status.set(1);
-                }
+                    @Override
+                    public void onSuccess(SearchResultBean data) {
+                        if (page == 0) {
+                            items.clear();
+                        }
+                        if (data.getData() != null) {
+                            isOver.set(data.getData().isOver());
+                            items.addAll(data.getData().getDatas());
+                        }
+                        if (items.size() == 0) {
+                            status.set(0);
+                        } else {
+                            status.set(1);
+                        }
 
-                if (refreshLayout != null) {
-                    refreshLayout.finishRefresh();
-                    refreshLayout.finishLoadMore();
-                }
-            }
+                        if (refreshLayout != null) {
+                            refreshLayout.finishRefresh();
+                            refreshLayout.finishLoadMore();
+                        }
+                    }
 
-            @Override
-            public void onFail(Throwable t) {
-                if (refreshLayout != null) {
-                    refreshLayout.finishRefresh();
-                    refreshLayout.finishLoadMore();
-                }
-            }
-        });
+                    @Override
+                    public void onFail(Throwable t) {
+                        if (refreshLayout != null) {
+                            refreshLayout.finishRefresh();
+                            refreshLayout.finishLoadMore();
+                        }
+                    }
+                });
 
     }
 

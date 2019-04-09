@@ -39,6 +39,7 @@
                         android:layout_width="15dp"
                         android:layout_height="15dp"
                         android:layout_marginLeft="9dp"
+                        app:onClickCommand="@{viewModel.searchImg}"
                         android:layout_gravity="center_vertical"
                         android:src="@mipmap/search_search_black"/>
                     <EditText

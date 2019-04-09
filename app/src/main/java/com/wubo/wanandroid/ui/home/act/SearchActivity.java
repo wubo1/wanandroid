@@ -2,6 +2,7 @@ package com.wubo.wanandroid.ui.home.act;
 
 import android.content.Context;
 import android.content.Intent;
+import android.databinding.Observable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -16,17 +17,13 @@ import com.wubo.wanandroid.BR;
 import com.wubo.wanandroid.R;
 import com.wubo.wanandroid.bean.HotKeyBean;
 import com.wubo.wanandroid.databinding.ActivitySearchBinding;
-import com.wubo.wanandroid.http.BaseNetObserver;
-import com.wubo.wanandroid.http.NetRequest;
 import com.wubo.wanandroid.ui.home.vm.SearchVm;
 import com.zhy.view.flowlayout.FlowLayout;
 import com.zhy.view.flowlayout.TagAdapter;
 import com.zhy.view.flowlayout.TagFlowLayout;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import me.goldze.mvvmhabit.base.BaseActivity;
+import me.goldze.mvvmhabit.utils.ToastUtils;
 
 /**
  * Author: wubo
@@ -35,8 +32,8 @@ import me.goldze.mvvmhabit.base.BaseActivity;
  */
 public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVm> {
 
-    private List<HotKeyBean.DataBean> dataBeans=new ArrayList<>();
     private TagAdapter tagAdapter;
+
     @Override
     public int initContentView(Bundle savedInstanceState) {
         return R.layout.activity_search;
@@ -57,8 +54,12 @@ public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVm
                     // 先隐藏键盘
                     ((InputMethodManager) binding.searchText.getContext().getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(SearchActivity.this.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
                     // 搜索，进行自己要的操作...
-                    viewModel.searchContent.set(binding.searchText.getText().toString());
-                    viewModel.toSearchResult.execute();
+                    if (binding.searchText.getText().toString().length() > 0) {
+                        viewModel.searchContent.set(binding.searchText.getText().toString());
+                        viewModel.toSearchResult.execute();
+                    } else {
+                        ToastUtils.showShort("请输入搜索内容");
+                    }
                     return true;
                 }
                 return false;
@@ -78,70 +79,57 @@ public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVm
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (binding.searchText.getText().toString().length()>0){
+                if (binding.searchText.getText().toString().length() > 0) {
                     binding.searchClear.setVisibility(View.VISIBLE);
-                }else{
+                } else {
                     binding.searchClear.setVisibility(View.GONE);
                 }
             }
         });
 
-        final LayoutInflater mInflater = LayoutInflater.from(SearchActivity.this);
-        tagAdapter=new TagAdapter<HotKeyBean.DataBean>(dataBeans) {
+        viewModel.uc.hotKeyBean.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
             @Override
-            public View getView(FlowLayout parent, int position, HotKeyBean.DataBean dataBean) {
-                TextView tv = (TextView) mInflater.inflate(R.layout.search_items, binding.tagflowlayout, false);
-                tv.setText(dataBean.getName());
-                return tv;
-            }
+            public void onPropertyChanged(Observable sender, int propertyId) {
+                final LayoutInflater mInflater = LayoutInflater.from(SearchActivity.this);
+                tagAdapter =
+                        new TagAdapter<HotKeyBean.DataBean>(viewModel.uc.hotKeyBean.get().getData()) {
+                    @Override
+                    public View getView(FlowLayout parent, int position,
+                                        HotKeyBean.DataBean dataBean) {
+                        TextView tv = (TextView) mInflater.inflate(R.layout.search_items,
+                                binding.tagflowlayout, false);
+                        tv.setText(dataBean.getName());
+                        return tv;
+                    }
 
-        };
-        binding.tagflowlayout.setAdapter(tagAdapter);
-        binding.tagflowlayout.setOnTagClickListener(new TagFlowLayout.OnTagClickListener() {
-            @Override
-            public boolean onTagClick(View view, int position, FlowLayout parent) {
-                viewModel.searchContent.set(dataBeans.get(position).getName());
-                viewModel.toSearchResult.execute();
-                return true;
+                };
+                binding.tagflowlayout.setAdapter(tagAdapter);
+                binding.tagflowlayout.setOnTagClickListener(new TagFlowLayout.OnTagClickListener() {
+                    @Override
+                    public boolean onTagClick(View view, int position, FlowLayout parent) {
+                        viewModel.searchContent.set(viewModel.uc.hotKeyBean.get().getData().get(position).getName());
+                        viewModel.toSearchResult.execute();
+                        return true;
+                    }
+                });
             }
         });
-        binding.searchImg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                viewModel.searchContent.set(binding.searchText.getText().toString());
-                viewModel.toSearchResult.execute();
-            }
-        });
-        hotKey();
+
+        viewModel.hotKey();
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        initdata();
+        initdata(intent);
     }
-    private void initdata(){
-        viewModel.searchContent.set(getIntent().getStringExtra("search"));
-        if (null!=viewModel.searchContent.get()&&!viewModel.searchContent.get().isEmpty()){
-            binding.searchText.setSelection(viewModel.searchContent.get().length());
+
+    private void initdata(Intent intent) {
+        String search = intent.getStringExtra("search");
+        viewModel.searchContent.set(search);
+        if (null != search && !search.isEmpty()) {
+            binding.searchText.setSelection(search.length());
         }
-        binding.searchText.setHint("搜索关键词以空格形式隔开");
-    }
-
-    private void hotKey(){
-        NetRequest.hotKey(viewModel.getLifecycleProvider(), new BaseNetObserver<HotKeyBean>() {
-            @Override
-            public void onSuccess(HotKeyBean data) {
-                dataBeans.clear();
-                dataBeans.addAll(data.getData());
-                tagAdapter.notifyDataChanged();
-            }
-
-            @Override
-            public void onFail(Throwable t) {
-
-            }
-        });
     }
 
 }
