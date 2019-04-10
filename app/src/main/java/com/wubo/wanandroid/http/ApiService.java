@@ -12,6 +12,7 @@ import com.wubo.wanandroid.bean.ProjectListBean;
 import com.wubo.wanandroid.bean.ProjectTabBean;
 import com.wubo.wanandroid.bean.RegisterBean;
 import com.wubo.wanandroid.bean.SearchResultBean;
+import com.wubo.wanandroid.bean.TopArticleBean;
 import com.wubo.wanandroid.bean.WXarticleBean;
 import com.wubo.wanandroid.bean.WXarticleListBean;
 
@@ -104,6 +105,13 @@ public interface ApiService {
      */
     @GET("friend/json")
     Observable<FriendBean> friend();
+
+    /**
+     * 置顶文章
+     * @return
+     */
+    @GET("article/top/json")
+    Observable<TopArticleBean>topArticle();
 
 
 

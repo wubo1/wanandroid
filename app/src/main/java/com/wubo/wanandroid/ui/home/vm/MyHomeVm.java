@@ -16,6 +16,7 @@ import com.wubo.wanandroid.R;
 import com.wubo.wanandroid.bean.ArticleBean;
 import com.wubo.wanandroid.bean.BannerBean;
 import com.wubo.wanandroid.bean.BaseBean;
+import com.wubo.wanandroid.bean.TopArticleBean;
 import com.wubo.wanandroid.config.ConstantConfig;
 import com.wubo.wanandroid.http.BaseNetObserver;
 import com.wubo.wanandroid.http.NetRequest;
@@ -88,7 +89,7 @@ public class MyHomeVm extends BaseViewModel {
         public void onRefresh(@NonNull RefreshLayout refreshLayout) {
             page = 0;
             requestBannerData(refreshLayout);
-            requestHomeActicle(page, refreshLayout);
+            requestHomtTopActicle(page, refreshLayout);
         }
     };
 
@@ -136,14 +137,32 @@ public class MyHomeVm extends BaseViewModel {
         });
     }
 
+    public void requestHomtTopActicle(final int pages, final RefreshLayout refreshLayout){
+        NetRequest.topArticle(getLifecycleProvider(), new BaseNetObserver<TopArticleBean>() {
+            @Override
+            public void onSuccess(TopArticleBean data) {
+                if (page == 0) {
+                    items.clear();
+                }
+                if (data != null && data.getData() != null) {
+                    items.addAll(data.getData());
+                }
+
+                requestHomeActicle(pages,refreshLayout);
+            }
+
+            @Override
+            public void onFail(Throwable t) {
+
+            }
+        });
+    }
+
     public void requestHomeActicle(final int pages, final RefreshLayout refreshLayout) {
         NetRequest.homeArticle(String.valueOf(pages), getLifecycleProvider(), new
                 BaseNetObserver<ArticleBean>() {
                     @Override
                     public void onSuccess(ArticleBean data) {
-                        if (page == 0) {
-                            items.clear();
-                        }
                         if (data != null && data.getData().getDatas() != null) {
                             items.addAll(data.getData().getDatas());
                         }

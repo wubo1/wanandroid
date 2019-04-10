@@ -7,7 +7,6 @@ import android.support.annotation.NonNull;
 
 import com.wubo.wanandroid.bean.FriendBean;
 import com.wubo.wanandroid.bean.HotKeyBean;
-import com.wubo.wanandroid.bean.SearchResultBean;
 import com.wubo.wanandroid.http.BaseNetObserver;
 import com.wubo.wanandroid.http.NetRequest;
 import com.wubo.wanandroid.ui.home.act.SearchResultActivity;

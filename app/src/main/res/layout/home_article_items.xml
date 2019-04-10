@@ -4,6 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
         <import type="com.wubo.wanandroid.R"/>
+        <import type="android.view.View"/>
         <variable
             name="item"
             type="com.wubo.wanandroid.bean.ArticleBean.DataBean.DatasBean"/>
@@ -29,6 +30,7 @@
             android:paddingBottom="10dp"
             android:paddingRight="10dp"
             android:paddingTop="10dp">
+
             <ImageView
                 android:id="@+id/article_item_favorite"
                 android:layout_width="wrap_content"
@@ -111,6 +113,15 @@
                 android:orientation="horizontal"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentRight="true">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="8dp"
+                    android:text="置顶"
+                    android:textColor="#EE4548"
+                    android:visibility="@{item.type==1?View.VISIBLE:View.GONE}"/>
+
                 <TextView
                     android:id="@+id/article_item_author"
                     android:layout_width="wrap_content"
