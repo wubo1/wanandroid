@@ -8,6 +8,7 @@ import com.wubo.wanandroid.bean.ArticleBean;
 import com.wubo.wanandroid.bean.BannerBean;
 import com.wubo.wanandroid.bean.BaseBean;
 import com.wubo.wanandroid.bean.CollectListBean;
+import com.wubo.wanandroid.bean.FriendBean;
 import com.wubo.wanandroid.bean.HotKeyBean;
 import com.wubo.wanandroid.bean.ProjectListBean;
 import com.wubo.wanandroid.bean.ProjectTabBean;
@@ -108,6 +109,11 @@ public class NetRequest {
     public static void search(String page,String key,LifecycleProvider lifecycleProvider,
                               BaseNetObserver<SearchResultBean> observer){
         CommonBase(apiService.search(page,key),lifecycleProvider).subscribe(observer);
+    }
+
+    public static void friend(LifecycleProvider lifecycleProvider,
+                              BaseNetObserver<FriendBean> observer){
+        CommonBase(apiService.friend(),lifecycleProvider).subscribe(observer);
     }
 
     private static <T> Observable CommonBase(Observable<T> observable,

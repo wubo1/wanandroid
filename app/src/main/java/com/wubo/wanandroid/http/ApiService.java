@@ -6,6 +6,7 @@ import com.wubo.wanandroid.bean.ArticleBean;
 import com.wubo.wanandroid.bean.BannerBean;
 import com.wubo.wanandroid.bean.BaseBean;
 import com.wubo.wanandroid.bean.CollectListBean;
+import com.wubo.wanandroid.bean.FriendBean;
 import com.wubo.wanandroid.bean.HotKeyBean;
 import com.wubo.wanandroid.bean.ProjectListBean;
 import com.wubo.wanandroid.bean.ProjectTabBean;
@@ -96,6 +97,14 @@ public interface ApiService {
     @POST("article/query/{page}/json")
     @FormUrlEncoded
     Observable<SearchResultBean> search(@Path("page")String page, @Field("k")String key);
+
+    /**
+     * 常用网站
+     * @return
+     */
+    @GET("friend/json")
+    Observable<FriendBean> friend();
+
 
 
 

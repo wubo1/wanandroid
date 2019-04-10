@@ -15,9 +15,11 @@ import android.widget.TextView;
 
 import com.wubo.wanandroid.BR;
 import com.wubo.wanandroid.R;
+import com.wubo.wanandroid.bean.FriendBean;
 import com.wubo.wanandroid.bean.HotKeyBean;
 import com.wubo.wanandroid.databinding.ActivitySearchBinding;
 import com.wubo.wanandroid.ui.home.vm.SearchVm;
+import com.wubo.wanandroid.ui.webview.MyWebViewActivity;
 import com.zhy.view.flowlayout.FlowLayout;
 import com.zhy.view.flowlayout.TagAdapter;
 import com.zhy.view.flowlayout.TagFlowLayout;
@@ -32,7 +34,8 @@ import me.goldze.mvvmhabit.utils.ToastUtils;
  */
 public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVm> {
 
-    private TagAdapter tagAdapter;
+    private TagAdapter hotTagAdapter;
+    private TagAdapter friendTagAdapter;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -86,25 +89,21 @@ public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVm
                 }
             }
         });
-
+        final LayoutInflater mInflater = LayoutInflater.from(SearchActivity.this);
         viewModel.uc.hotKeyBean.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
             @Override
             public void onPropertyChanged(Observable sender, int propertyId) {
-                final LayoutInflater mInflater = LayoutInflater.from(SearchActivity.this);
-                tagAdapter =
-                        new TagAdapter<HotKeyBean.DataBean>(viewModel.uc.hotKeyBean.get().getData()) {
+                hotTagAdapter = new TagAdapter<HotKeyBean.DataBean>(viewModel.uc.hotKeyBean.get().getData()) {
                     @Override
-                    public View getView(FlowLayout parent, int position,
-                                        HotKeyBean.DataBean dataBean) {
-                        TextView tv = (TextView) mInflater.inflate(R.layout.search_items,
-                                binding.tagflowlayout, false);
+                    public View getView(FlowLayout parent, int position, HotKeyBean.DataBean dataBean) {
+                        TextView tv = (TextView) mInflater.inflate(R.layout.search_items, binding.tagflowlayoutHot, false);
                         tv.setText(dataBean.getName());
                         return tv;
                     }
 
                 };
-                binding.tagflowlayout.setAdapter(tagAdapter);
-                binding.tagflowlayout.setOnTagClickListener(new TagFlowLayout.OnTagClickListener() {
+                binding.tagflowlayoutHot.setAdapter(hotTagAdapter);
+                binding.tagflowlayoutHot.setOnTagClickListener(new TagFlowLayout.OnTagClickListener() {
                     @Override
                     public boolean onTagClick(View view, int position, FlowLayout parent) {
                         viewModel.searchContent.set(viewModel.uc.hotKeyBean.get().getData().get(position).getName());
@@ -114,8 +113,34 @@ public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVm
                 });
             }
         });
+        viewModel.uc.friendBean.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
+            @Override
+            public void onPropertyChanged(Observable sender, int propertyId) {
+                friendTagAdapter = new TagAdapter<FriendBean.DataBean>(viewModel.uc.friendBean.get().getData()) {
+                    @Override
+                    public View getView(FlowLayout parent, int position, FriendBean.DataBean dataBean) {
+                        TextView tv = (TextView) mInflater.inflate(R.layout.search_items, binding.tagflowlayoutFriend, false);
+                        tv.setText(dataBean.getName());
+                        return tv;
+                    }
 
-        viewModel.hotKey();
+                };
+                binding.tagflowlayoutFriend.setAdapter(friendTagAdapter);
+                binding.tagflowlayoutFriend.setOnTagClickListener(new TagFlowLayout.OnTagClickListener() {
+                    @Override
+                    public boolean onTagClick(View view, int position, FlowLayout parent) {
+                        if (!"".equals(viewModel.uc.friendBean.get().getData().get(position).getLink())) {
+                            Bundle bundle = new Bundle();
+                            bundle.putString("url", viewModel.uc.friendBean.get().getData().get(position).getLink());
+                            startActivity(MyWebViewActivity.class, bundle);
+                        }
+                        return true;
+                    }
+                });
+            }
+        });
+
+        viewModel.search();
     }
 
     @Override

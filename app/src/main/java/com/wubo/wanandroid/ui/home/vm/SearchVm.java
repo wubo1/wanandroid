@@ -5,7 +5,9 @@ import android.databinding.ObservableField;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
+import com.wubo.wanandroid.bean.FriendBean;
 import com.wubo.wanandroid.bean.HotKeyBean;
+import com.wubo.wanandroid.bean.SearchResultBean;
 import com.wubo.wanandroid.http.BaseNetObserver;
 import com.wubo.wanandroid.http.NetRequest;
 import com.wubo.wanandroid.ui.home.act.SearchResultActivity;
@@ -27,6 +29,7 @@ public class SearchVm extends BaseViewModel {
 
     public class UIChangeObservable {
         public ObservableField<HotKeyBean> hotKeyBean = new ObservableField<>();
+        public ObservableField<FriendBean> friendBean = new ObservableField<>();
     }
 
     public SearchVm(@NonNull Application application) {
@@ -71,11 +74,22 @@ public class SearchVm extends BaseViewModel {
         startActivity(SearchResultActivity.class, bundle);
     }
 
-    public void hotKey() {
+    public void search() {
         NetRequest.hotKey(getLifecycleProvider(), new BaseNetObserver<HotKeyBean>() {
             @Override
             public void onSuccess(HotKeyBean data) {
                 uc.hotKeyBean.set(data);
+            }
+
+            @Override
+            public void onFail(Throwable t) {
+
+            }
+        });
+        NetRequest.friend(getLifecycleProvider(), new BaseNetObserver<FriendBean>() {
+            @Override
+            public void onSuccess(FriendBean data) {
+                uc.friendBean.set(data);
             }
 
             @Override
