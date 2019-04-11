@@ -1,7 +1,6 @@
 package com.wubo.wanandroid.ui.home.fra;
 
 import android.databinding.Observable;
-import android.databinding.ObservableList;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -9,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.wubo.wanandroid.R;
-import com.wubo.wanandroid.bean.ArticleBean;
 import com.wubo.wanandroid.config.ConstantConfig;
 import com.wubo.wanandroid.databinding.FragmentMyHomeBinding;
 import com.wubo.wanandroid.ui.home.vm.MyHomeVm;
@@ -18,7 +16,6 @@ import com.wubo.wanandroid.utils.CommonUtils;
 import com.wubo.wanandroid.utils.GlideImageLoader;
 import com.youth.banner.BannerConfig;
 import com.youth.banner.Transformer;
-import com.youth.banner.listener.OnBannerClickListener;
 import com.youth.banner.listener.OnBannerListener;
 
 import me.goldze.mvvmhabit.BR;
@@ -98,23 +95,33 @@ public class MyHomeFragment extends BaseFragment<FragmentMyHomeBinding,MyHomeVm>
                 binding.homeBanner.setIndicatorGravity(BannerConfig.RIGHT);
                 //banner设置方法全部调用完毕时最后调用
                 binding.homeBanner.start();
-                binding.homeBanner.setOnBannerClickListener(new OnBannerClickListener() {
+                binding.homeBanner.setOnBannerListener(new OnBannerListener() {
                     @Override
                     public void OnBannerClick(int position) {
                         Bundle bundle = new Bundle();
                         bundle.putString("url" , viewModel.uiChangeObservable.bannerData.get()
-                                .getData().get(position-1).getUrl());
+                                .getData().get(position).getUrl());
                         startActivity(MyWebViewActivity.class , bundle);
                     }
                 });
-                /*binding.homeBanner.setOnBannerListener(new OnBannerListener() {
-                    @Override
-                    public void OnBannerClick(int position) {
-
-                    }
-                });*/
             }
         });
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (binding.homeBanner != null) {
+            binding.homeBanner.startAutoPlay();
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (binding.homeBanner != null) {
+            binding.homeBanner.stopAutoPlay();
+        }
     }
 }

@@ -44,6 +44,16 @@ public interface ApiService {
     @GET("wxarticle/list/{id}/{page}/json")
     Observable<WXarticleListBean> wxarticleList(@Path("page")String page, @Path("id") String cid);
 
+    /**
+     * 在某个公众号中搜索历史文章
+     * @param page
+     * @param cid
+     * @param key
+     * @return
+     */
+    @GET("wxarticle/list/{id}/{page}/json")
+    Observable<WXarticleListBean> wxarticleListKey(@Path("page")String page, @Path("id") String cid,@Query("k") String key);
+
     @GET("tree/json")
     Observable<ArchitectureBean> architecture();
 

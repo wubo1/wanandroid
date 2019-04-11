@@ -89,6 +89,7 @@ public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVm
                 }
             }
         });
+
         final LayoutInflater mInflater = LayoutInflater.from(SearchActivity.this);
         viewModel.uc.hotKeyBean.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
             @Override

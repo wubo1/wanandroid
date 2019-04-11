@@ -10,9 +10,7 @@ import android.view.ViewGroup;
 import com.wubo.wanandroid.BR;
 import com.wubo.wanandroid.R;
 import com.wubo.wanandroid.config.ConstantConfig;
-import com.wubo.wanandroid.databinding.FragmentProjectListBinding;
 import com.wubo.wanandroid.databinding.FragmentWxarticleListBinding;
-import com.wubo.wanandroid.ui.projects.vm.ProjectListVm;
 import com.wubo.wanandroid.ui.wxarticle.vm.WXarticleListVm;
 
 import me.goldze.mvvmhabit.base.BaseFragment;
@@ -57,6 +55,13 @@ public class WXarticleListFragment extends BaseFragment<FragmentWxarticleListBin
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Messenger.getDefault().register(this, ConstantConfig.TOKEN_LOGOUT_LOGIN, new BindingAction() {
+            @Override
+            public void call() {
+                binding.wxarticleListRefresh.autoRefresh();
+            }
+        });
+
+        Messenger.getDefault().register(this, ConstantConfig.SEARCHKEY, new BindingAction() {
             @Override
             public void call() {
                 binding.wxarticleListRefresh.autoRefresh();

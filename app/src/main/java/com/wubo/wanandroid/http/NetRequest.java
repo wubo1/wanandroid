@@ -53,6 +53,11 @@ public class NetRequest {
         CommonBase(apiService.wxarticleList(page, id), lifecycleProvider).subscribe(observer);
     }
 
+    public static void wxarticleListKey(String page, String id,String key, LifecycleProvider lifecycleProvider,
+                                        BaseNetObserver<WXarticleListBean> observer) {
+        CommonBase(apiService.wxarticleListKey(page, id, key), lifecycleProvider).subscribe(observer);
+    }
+
     public static void architecture(LifecycleProvider lifecycleProvider, BaseNetObserver<ArchitectureBean> observer) {
         CommonBase(apiService.architecture(), lifecycleProvider).subscribe(observer);
     }

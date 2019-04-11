@@ -16,13 +16,16 @@ import com.wubo.wanandroid.R;
 import com.wubo.wanandroid.bean.BaseBean;
 import com.wubo.wanandroid.bean.ProjectListBean;
 import com.wubo.wanandroid.bean.WXarticleListBean;
+import com.wubo.wanandroid.config.NetConstant;
 import com.wubo.wanandroid.http.BaseNetObserver;
 import com.wubo.wanandroid.http.NetRequest;
 import com.wubo.wanandroid.ui.webview.MyWebViewActivity;
+import com.wubo.wanandroid.ui.wxarticle.fra.WXarticleFragment;
 import com.wubo.wanandroid.utils.CommonUtils;
 import com.wubo.wanandroid.utils.OnItemClickListener;
 
 import me.goldze.mvvmhabit.base.BaseViewModel;
+import me.goldze.mvvmhabit.utils.SPUtils;
 import me.goldze.mvvmhabit.utils.ToastUtils;
 import me.tatarka.bindingcollectionadapter2.ItemBinding;
 
@@ -79,14 +82,23 @@ public class WXarticleListVm extends BaseViewModel {
                 refreshLayout.setNoMoreData(true);
             }else{
                 page++;
-                queryWxarticleList(cid.get(),refreshLayout);
+                if (WXarticleFragment.searchKey.length()>0){
+                    queryWxarticleListKey(cid.get(),refreshLayout);
+                }else{
+                    queryWxarticleList(cid.get(),refreshLayout);
+                }
             }
         }
 
         @Override
         public void onRefresh(@NonNull RefreshLayout refreshLayout) {
             page=1;
-            queryWxarticleList(cid.get(),refreshLayout);
+            if (WXarticleFragment.searchKey.length()>0){
+                queryWxarticleListKey(cid.get(),refreshLayout);
+            }else{
+                queryWxarticleList(cid.get(),refreshLayout);
+            }
+
         }
     };
 
@@ -124,6 +136,42 @@ public class WXarticleListVm extends BaseViewModel {
                 }
             }
         });
+    }
+
+    private void queryWxarticleListKey( String id, final RefreshLayout refreshLayout) {
+        NetRequest.wxarticleListKey(String.valueOf(page),  id, WXarticleFragment.searchKey,getLifecycleProvider(), new
+                BaseNetObserver<WXarticleListBean>() {
+
+                    @Override
+                    public void onSuccess(WXarticleListBean data) {
+
+                        if (page == 1) {
+                            items.clear();
+                        }
+                        if (data.getData()!=null){
+                            isOver.set(data.getData().isOver());
+                            items.addAll(data.getData().getDatas());
+                        }
+                        if (items.size()==0){
+                            status.set(0);
+                        }else{
+                            status.set(1);
+                        }
+
+                        if (refreshLayout != null) {
+                            refreshLayout.finishRefresh();
+                            refreshLayout.finishLoadMore();
+                        }
+                    }
+
+                    @Override
+                    public void onFail(Throwable t) {
+                        if (refreshLayout != null) {
+                            refreshLayout.finishRefresh();
+                            refreshLayout.finishLoadMore();
+                        }
+                    }
+                });
     }
 
     private void collect(final int id, boolean isCollect) {
