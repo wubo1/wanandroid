@@ -8,13 +8,73 @@ android {
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
+        flavorDimensions("1")
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+
+    signingConfigs {
+        debug {
+            storeFile file('/Users/wubo/Desktop/wanandroid/wanandroid.jks')
+            storePassword "123qwe123"
+            keyAlias "wanandroid"
+            keyPassword "123qwe123"
+        }
+        release {
+            storeFile file('/Users/wubo/Desktop/wanandroid/wanandroid.jks')
+            storePassword "123qwe123"
+            keyAlias "wanandroid"
+            keyPassword "123qwe123"
+        }
+    }
+
     buildTypes {
         release {
-            minifyEnabled false
+            zipAlignEnabled true     //Zipalign优化
+            shrinkResources false    // 移除无用的resource文件
+            minifyEnabled true     //混淆
+            signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+            //配置自定义打包名称
+            android.applicationVariants.all { variant ->
+                variant.outputs.all {
+                    outputFileName = "wanandroid-${variant.productFlavors[0].name}.apk"
+                }
+            }
         }
+        debug {
+            minifyEnabled false
+            signingConfig signingConfigs.debug
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+        }
+    }
+
+    configurations.all {
+        resolutionStrategy.force 'com.google.code.findbugs:jsr305:1.3.9'
+    }
+
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
+
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+    dexOptions {
+        dexInProcess true
+        preDexLibraries true
+        javaMaxHeapSize "4g"//越大越好
+    }
+
+    productFlavors {
+        app {}
+    }
+    productFlavors.all { flavor ->
+        flavor.manifestPlaceholders = [UMENG_CHANNEL_VALUE: name]
     }
     dataBinding {
         enabled true
