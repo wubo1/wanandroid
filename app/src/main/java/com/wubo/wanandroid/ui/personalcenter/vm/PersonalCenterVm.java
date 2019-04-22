@@ -47,6 +47,7 @@ import static android.content.ContentValues.TAG;
 public class PersonalCenterVm extends BaseViewModel {
     public int page =0;
     public ObservableInt status=new ObservableInt(0);
+    public ObservableInt dataStatus=new ObservableInt(0);
     public ObservableField<String> username=new ObservableField<>();
     public ObservableBoolean isOver= new ObservableBoolean(false);
     public UIChangeObservable uc = new UIChangeObservable();
@@ -151,8 +152,10 @@ public class PersonalCenterVm extends BaseViewModel {
                 }
                 if (items.size()==0){
                     status.set(0);
+                    dataStatus.set(0);
                 }else{
                     status.set(1);
+                    dataStatus.set(1);
                 }
 
                 if (refreshLayout != null) {
@@ -180,6 +183,14 @@ public class PersonalCenterVm extends BaseViewModel {
                         items.remove(i);
                         break;
                     }
+                }
+
+                if (items.size()==0){
+                    status.set(0);
+                    dataStatus.set(0);
+                }else{
+                    status.set(1);
+                    dataStatus.set(1);
                 }
             }
 

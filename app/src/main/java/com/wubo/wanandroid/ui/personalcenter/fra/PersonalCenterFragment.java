@@ -51,7 +51,9 @@ public class PersonalCenterFragment extends BaseFragment<FragmentPersonalCenterB
     @Override
     public void onStart() {
         super.onStart();
-        binding.personalCenterRefresh.autoRefresh();
+        if (CommonUtils.isLogin()){
+            binding.personalCenterRefresh.autoRefresh();
+        }
         viewModel.refreshLoginData();
     }
 
@@ -90,6 +92,8 @@ public class PersonalCenterFragment extends BaseFragment<FragmentPersonalCenterB
                                     Messenger.getDefault().sendNoMsg(ConstantConfig.TOKEN_LOGOUT_LOGIN);
                                     viewModel.refreshLoginData();
                                     exitDialog.cancel();
+                                    viewModel.dataStatus.set(0);
+                                    viewModel.status.set(0);
                                     break;
                                 case R.id.tv_quxiao:
                                     exitDialog.cancel();

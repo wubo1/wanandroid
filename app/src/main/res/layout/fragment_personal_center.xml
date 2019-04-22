@@ -103,7 +103,8 @@
             <android.support.v4.widget.NestedScrollView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:scrollbars="none">
+                android:scrollbars="none"
+                android:fillViewport="true">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -151,6 +152,18 @@
                         app:items="@{viewModel.items}"
                         app:itemBinding="@{viewModel.itemBinding}"
                         app:layoutManager="@{LayoutManagers.linear()}"/>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:visibility="@{viewModel.dataStatus==0?View.VISIBLE:View.GONE}"
+                        android:orientation="vertical">
+
+                        <include
+                            layout="@layout/layout_not_data"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+                    </LinearLayout>
+
                 </LinearLayout>
             </android.support.v4.widget.NestedScrollView>
         </com.scwang.smartrefresh.layout.SmartRefreshLayout>
