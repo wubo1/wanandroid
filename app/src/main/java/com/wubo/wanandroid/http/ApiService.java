@@ -26,47 +26,104 @@ import retrofit2.http.Query;
 
 public interface ApiService {
 
+    /**
+     * 首页banner
+     * @return
+     */
     @GET("/banner/json")
     Observable<BannerBean> banner();
 
+    /**
+     * 首页文章
+     * @param page 页码
+     * @return
+     */
     @GET("article/list/{page}/json")
     Observable<ArticleBean> homeArticle(@Path("page")String page);
 
+    /**
+     * 项目分类
+     * @return
+     */
     @GET("project/tree/json")
     Observable<ProjectTabBean> projectTab();
 
+    /**
+     * 项目分类下的列表数据
+     * @param page 页码
+     * @param cid 分类id
+     * @return
+     */
     @GET("project/list/{page}/json?")
     Observable<ProjectListBean> projectList(@Path("page")String page,@Query("cid") String cid);
 
+    /**
+     * 公众号列表
+     * @return
+     */
     @GET("wxarticle/chapters/json")
     Observable<WXarticleBean> wxarticleTab();
 
+    /**
+     * 某个公众号历史数据
+     * @param page 页码
+     * @param cid 公众号id
+     * @return
+     */
     @GET("wxarticle/list/{id}/{page}/json")
     Observable<WXarticleListBean> wxarticleList(@Path("page")String page, @Path("id") String cid);
 
     /**
      * 在某个公众号中搜索历史文章
-     * @param page
-     * @param cid
-     * @param key
+     * @param page 页码
+     * @param cid 公众号ID
+     * @param key 搜索关键字
      * @return
      */
     @GET("wxarticle/list/{id}/{page}/json")
     Observable<WXarticleListBean> wxarticleListKey(@Path("page")String page, @Path("id") String cid,@Query("k") String key);
 
+    /**
+     * 体系数据 分类
+     * @return
+     */
     @GET("tree/json")
     Observable<ArchitectureBean> architecture();
 
+    /**
+     * 体系下的文章
+     * @param page 页码
+     * @param cid 分类id
+     * @return
+     */
     @GET("article/list/{page}/json?")
     Observable<ArchitectureChildrenBean> architectureChildren(@Path("page")String page,@Query("cid") String cid);
 
+    /**
+     * 登录
+     * @param username 用户名
+     * @param password 密码
+     * @return
+     */
     @POST("user/login")
     Observable<BaseBean>login(@Query("username")String username,@Query("password")String password);
 
+    /**
+     * 注册
+     * @param username 用户名
+     * @param password 密码
+     * @param repassword 确认密码
+     * @return
+     */
     @POST("user/register")
     Observable<RegisterBean>register(@Query("username")String username, @Query("password")String password,
                                      @Query("repassword")String repassword);
 
+    /**
+     * 收藏文章列表
+     * @param page 页码
+     * @return
+     */
     @GET("lg/collect/list/{page}/json")
     Observable<CollectListBean>collectList(@Path("page")String page);
 
@@ -85,6 +142,7 @@ public interface ApiService {
      */
     @POST("lg/uncollect_originId/{id}/json")
     Observable<BaseBean>unCollect(@Path("id")int id);
+
     /**
      * 我的收藏取消收藏文章
      * @param id 文章ID
@@ -122,8 +180,4 @@ public interface ApiService {
      */
     @GET("article/top/json")
     Observable<TopArticleBean>topArticle();
-
-
-
-
 }
